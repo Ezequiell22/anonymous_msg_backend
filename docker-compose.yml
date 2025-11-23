@@ -1,0 +1,18 @@
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+
+  backend:
+    build: .
+    environment:
+      - REDIS_ADDR=redis:6379
+      - PLACEHOLDER_TTL=30m
+      - MESSAGE_TTL=24h
+      - ADDR=:8080
+    depends_on:
+      - redis
+    ports:
+      - "8080:8080"
